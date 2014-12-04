@@ -56,7 +56,7 @@ function timer(e){
 	cow.heading=(360-cow.heading)%360;
     }
     changeLoc(x+"px",y+"px")
-    console.log("cow is at:"+x+","+y);
+    //console.log("cow is at:"+x+","+y);
     //cow.heading=(cow.heading+random_num(2)-1);
     //console.log(cow.heading);
     //console.log(width);	
@@ -65,7 +65,6 @@ function updateVolume(){
     
 }
 var button=document.getElementById("b");
-button.addEventListener('click',start);
 var start=function(){
     console.log("started your stupid game");
     music = new Audio("cantina.mp3");
@@ -77,16 +76,17 @@ var start=function(){
     window.addEventListener("mousemove",function(e){
 	//console.log(e.pageX+" "+e.pageY);
 	mouseX = e.pageX;
-	mouseY = e.pageY;
-	
-	var cowX = (cow.style.left)+64;
-	var cowY = cow.style.top+64;
-	var deltaX = (cowX-mouseX)/(width-64);
-	var deltaY = (cowY-mouseY)/(height-64);	
+	mouseY = e.pageY;	
+	var x = cow.style.left.substring(0,cow.style.left.length-2);
+	var y = cow.style.top.substring(0,cow.style.top.length-2);
+	x = parseInt(x)+64;
+	y = parseInt(y)+64;
+	var deltaX = (x-mouseX)/(width-64);
+	var deltaY = (y-mouseY)/(height-64);	
 	var dist = Math.sqrt((deltaX*deltaX)+(deltaY*deltaY));
 	var newVol = 1-dist;
-	//console.log(newVol);
+	console.log(newVol);
 	music.volume = newVol;
-	
     });
 }
+button.addEventListener('click',start);
