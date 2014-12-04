@@ -20,7 +20,7 @@ var height = document.documentElement.clientHeight;
     
 
 var cow=document.getElementById("cow");
-cow.speed=3;
+cow.speed=8;
 cow.heading=0;
 cow.style.position="absolute";
 cow.style.left="200px";
@@ -42,28 +42,43 @@ function timer(e){
     x = Math.floor(x + cow.speed*Math.cos(toRad(cow.heading)));
     var y = cow.style.top;
     y = parseInt(y.substring(0,y.length-2));
-    y = Math.floor(y + cow.speed*Math.sin(toRad(cow.heading)));
+    y = Math.floor(y - cow.speed*Math.sin(toRad(cow.heading)));
     //console.log(Math.sin(toRad(cow.heading)));
     //console.log(Math.cos(toRad(cow.heading)));
     //console.log("heading"+cow.heading);
     if(x<0 && abs_value_from(180,cow.heading) < 90){
 	cow.heading=(180-cow.heading)%360;
-    }else if (x>width-128 &&abs_value_from(0,cow.heading) <90){
+    }else if (x>width-200 &&abs_value_from(0,cow.heading) <90){
 	cow.heading=(180-cow.heading)%360;
     }else if (y<0 && abs_value_from(90,cow.heading) < 90){
 	cow.heading=(360-cow.heading)%360;
-    }else if(y>height-128 && abs_value_from(270,cow.heading)<90){
+    }else if(y>height-200 && abs_value_from(270,cow.heading)<90){
 	cow.heading=(360-cow.heading)%360;
     }
     changeLoc(x+"px",y+"px")
     //console.log("cow is at:"+x+","+y);
-    //cow.heading=(cow.heading+random_num(2)-1);
-    //console.log(cow.heading);
+    cow.heading=(cow.heading+random_num(10)-5)%360;
+    while(cow.heading<0){//mod doesnt deal with negatives?
+	cow.heading+=360;
+    }
+    console.log(cow.heading);
     //console.log(width);	
-}   
-function updateVolume(){
-    
 }
+var updateMusic = function(e){
+    mouseX = e.pageX;
+    mouseY = e.pageY;	
+    var x = cow.style.left.substring(0,cow.style.left.length-2);
+    var y = cow.style.top.substring(0,cow.style.top.length-2);
+    x = parseInt(x)+64;
+    y = parseInt(y)+64;
+    var deltaX = (x-mouseX)/(width-64);
+    var deltaY = (y-mouseY)/(height-64);	
+    var dist = Math.sqrt((deltaX*deltaX)+(deltaY*deltaY));
+    var newVol = 1-dist;
+    console.log(newVol);
+    music.volume = newVol;
+}
+
 var button=document.getElementById("b");
 var start=function(){
     console.log("started your stupid game");
@@ -73,20 +88,7 @@ var start=function(){
 	this.play();
     }, false);
     music.play();
-    window.addEventListener("mousemove",function(e){
-	//console.log(e.pageX+" "+e.pageY);
-	mouseX = e.pageX;
-	mouseY = e.pageY;	
-	var x = cow.style.left.substring(0,cow.style.left.length-2);
-	var y = cow.style.top.substring(0,cow.style.top.length-2);
-	x = parseInt(x)+64;
-	y = parseInt(y)+64;
-	var deltaX = (x-mouseX)/(width-64);
-	var deltaY = (y-mouseY)/(height-64);	
-	var dist = Math.sqrt((deltaX*deltaX)+(deltaY*deltaY));
-	var newVol = 1-dist;
-	console.log(newVol);
-	music.volume = newVol;
-    });
+    window.addEventListener("mousemove",updateMusic);
+    
 }
 button.addEventListener('click',start);
